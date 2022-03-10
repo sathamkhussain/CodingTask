@@ -17,7 +17,7 @@ class DewaLocationsController: UIViewController, XMLParserDelegate {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        tableView.register(UINib(nibName: "LocationTVC", bundle: nil), forCellReuseIdentifier: "LocationCell")
+        tableView.register(UINib(nibName: "LocationTableViewCell", bundle: nil), forCellReuseIdentifier: "LocationCell")
         self.navigationItem.title  = "DEWA Locations"
 
     }
