@@ -62,6 +62,10 @@ class LocationDetailController: UIViewController {
 extension LocationDetailController: MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+       openGoogleMap()
+//    openApplemap()
+    }
+    func openApplemap(){
         let source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: LocationManager.shared.lastLocation?.coordinate.latitude ?? 0.0, longitude: LocationManager.shared.lastLocation?.coordinate.longitude ?? 0.0 )))
         source.name = "Source"
 
@@ -73,25 +77,36 @@ extension LocationDetailController: MKMapViewDelegate {
         )
     }
 
+    func openGoogleMap() {
+        if (UIApplication.shared.canOpenURL(URL(string:"comgooglemaps://")!)) {  //if phone has an app
+            if let url = URL(string: "comgooglemaps-x-callback://?saddr=&daddr=\(location?.coordinate.latitude ?? 0.0),\(location?.coordinate.longitude ?? 0.0)&directionsmode=driving") {
+                UIApplication.shared.open(url, options: [:])
+            }}
+        else {
+            //Open in browser
+            if let urlDestination = URL.init(string: "https://www.google.co.in/maps/dir/?saddr=&daddr=\(location?.coordinate.latitude ?? 0.0),\(location?.coordinate.longitude ?? 0.0)&directionsmode=driving") {
+                UIApplication.shared.open(urlDestination)
+            }
+        }
+    }
+    
+
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView){
         print("didSelectAnnotationTapped")
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation { return nil }
-
         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKPinAnnotationView
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
-            annotationView?.tintColor = .green                // do whatever customization you want
+            annotationView?.tintColor = .black                // do whatever customization you want
             annotationView?.canShowCallout = true            // but turn off callout
-
             let button = UIButton(type: .infoDark)
             annotationView?.rightCalloutAccessoryView = button
         } else {
             annotationView?.annotation = annotation
         }
-
         return annotationView
     }
 }
