@@ -43,6 +43,23 @@ extension CSLocationController : UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = locationVM.csLocationItems[indexPath.row]
+        JumpToDetailScreen(data: data)
+    }
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let data = locationVM.csLocationItems[indexPath.row]
+        let actionProvider: UIContextMenuActionProvider = { _ in
+            return UIMenu(title: "Address details", children: [
+                UIAction(title: data?.title ?? "") { _ in
+                    self.JumpToDetailScreen(data: data)
+                },
+                UIAction(title: data?.address ?? ""){ _ in
+                    self.JumpToDetailScreen(data: data)
+                }
+            ])
+        }
+        return UIContextMenuConfiguration(identifier: "unique-ID" as NSCopying, previewProvider: nil, actionProvider: actionProvider)
+    }
+    func JumpToDetailScreen(data : LocationItem?){
         let location = locationVM.getCoordinates(latitude: data?.latitude, longitude: data?.longitude)
         let controller = self.storyboard?.instantiateViewController(withIdentifier: "LocationDetail") as! LocationDetailController
         controller.location = location

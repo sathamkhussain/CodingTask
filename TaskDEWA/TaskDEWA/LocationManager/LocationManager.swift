@@ -30,7 +30,7 @@ final class LocationManager: NSObject {
     private var locationManager:CLLocationManager?
     var locationAccuracy = kCLLocationAccuracyBest
 
-    private var lastLocation:CLLocation?
+    public  var lastLocation:CLLocation?
     private var reverseGeocoding = false
 
     //Singleton Instance

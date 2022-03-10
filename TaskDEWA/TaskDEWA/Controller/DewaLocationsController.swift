@@ -46,11 +46,28 @@ extension DewaLocationsController : UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = locationVM.locations[indexPath.row]
+        JumpToDetailScreen(data: data)
+    }
+     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let data = locationVM.locations[indexPath.row]
+        let actionProvider: UIContextMenuActionProvider = { _ in
+            return UIMenu(title: "Address details", children: [
+                UIAction(title: data?.office ?? "") { _ in
+                    self.JumpToDetailScreen(data: data)
+                },
+                UIAction(title: data?.loc ?? ""){ _ in
+                    self.JumpToDetailScreen(data: data)
+                }
+            ])
+        }
+         return UIContextMenuConfiguration(identifier: "unique-ID" as NSCopying, previewProvider: nil, actionProvider: actionProvider)
+    }
+    func JumpToDetailScreen(data: Item?)  {
         let location = locationVM.getCoordinates(latitude: data?.lat, longitude: data?.lon)
         let controller = self.storyboard?.instantiateViewController(withIdentifier: "LocationDetail") as! LocationDetailController
         controller.location = location
         controller.item = data
         self.navigationController?.pushViewController(controller, animated: true)
-
     }
+
 }
